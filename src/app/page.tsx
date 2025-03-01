@@ -3,6 +3,7 @@
 import Image from "next/image";
 import PlaidLinkButton from "./components/PlaidLink";
 import DashboardPreview from "./components/DashboardPreview";
+import LoopMessageForm from "./components/LoopMessageForm";
 
 export default function Home() {
   return (
@@ -12,14 +13,6 @@ export default function Home() {
         {/* Grid */}
         <div className="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
           <div>
-            <Image
-              className="h-10 w-auto mb-6 dark:invert"
-              src="/next.svg"
-              alt="Next.js logo"
-              width={180}
-              height={38}
-              priority
-            />
             <h1 className="block text-3xl font-bold text-gray-800 sm:text-4xl lg:text-6xl lg:leading-tight dark:text-white">
               Manage your <span className="text-blue-600 dark:text-blue-500">investments</span> with confidence
             </h1>
@@ -122,39 +115,13 @@ export default function Home() {
       </div>
       {/* End Hero */}
 
-      <footer className="flex gap-6 flex-wrap items-center justify-center py-6 border-t border-gray-200 dark:border-gray-800">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4 text-gray-600 dark:text-gray-400"
-          href="https://nextjs.org/learn"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-            className="dark:invert"
-          />
-          Learn Next.js
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4 text-gray-600 dark:text-gray-400"
-          href="https://plaid.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-            className="dark:invert"
-          />
-          Powered by Plaid
-        </a>
+      <footer className="flex flex-col gap-6 items-center justify-center py-6 border-t border-gray-200 dark:border-gray-800">
+        <div className="w-full max-w-4xl">
+          <h2 className="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-white">
+            Connect with <span className="text-blue-600 dark:text-blue-500">LoopMessage</span>
+          </h2>
+          <LoopMessageForm />
+        </div>
       </footer>
     </div>
   );
