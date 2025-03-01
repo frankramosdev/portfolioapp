@@ -8,7 +8,7 @@ export async function POST(request) {
     try {
       const body = await request.json();
       phoneNumber = body.phone_number;
-    } catch (e) {
+    } catch {
       // If request parsing fails, continue without phone number
       console.log('No phone number provided in request body');
     }

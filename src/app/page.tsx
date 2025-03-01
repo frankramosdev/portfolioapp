@@ -1,6 +1,5 @@
 'use client';
 
-import Image from "next/image";
 import PlaidLinkButton from "./components/PlaidLink";
 import DashboardPreview from "./components/DashboardPreview";
 import LoopMessageForm from "./components/LoopMessageForm";
@@ -47,7 +46,7 @@ export default function Home() {
 
                 <div className="mt-5">
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    "I can finally see all my investments in one place!"
+                    &ldquo;I can finally see all my investments in one place!&rdquo;
                   </p>
                 </div>
               </div>
@@ -69,7 +68,7 @@ export default function Home() {
 
                 <div className="mt-5">
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    "Tracking my 401k and IRA has never been easier!"
+                    &ldquo;Tracking my 401k and IRA has never been easier!&rdquo;
                   </p>
                 </div>
               </div>

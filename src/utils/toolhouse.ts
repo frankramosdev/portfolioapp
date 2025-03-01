@@ -1,5 +1,6 @@
 import { Toolhouse } from '@toolhouseai/sdk';
 import OpenAI from 'openai';
+import type { ChatCompletionTool } from 'openai/resources/chat/completions';
 
 // Initialize Toolhouse with API key from environment
 export const toolhouse = new Toolhouse({
@@ -22,7 +23,7 @@ export async function getToolsAndExecute(query: string) {
     const response = await openai.chat.completions.create({
       model: 'gpt-4-turbo',
       messages: [{ role: 'user', content: query }],
-      tools: tools as any, // Type assertion to avoid TypeScript errors
+      tools: tools as ChatCompletionTool[], // Use proper OpenAI type
     });
 
     return response;
