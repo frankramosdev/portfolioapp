@@ -1,20 +1,41 @@
 import { NextResponse } from 'next/server';
 import { plaidClient } from '../../lib/plaid';
 
-export async function POST() {
+export async function POST(request) {
   try {
+    // Parse the request body to get the phone number if provided
+    let phoneNumber = null;
+    try {
+      const body = await request.json();
+      phoneNumber = body.phone_number;
+    } catch (e) {
+      // If request parsing fails, continue without phone number
+      console.log('No phone number provided in request body');
+    }
+    
     console.log('PLAID_CLIENT_ID:', process.env.PLAID_CLIENT_ID);
     console.log('PLAID_ENV:', process.env.PLAID_ENV);
     console.log('PLAID_SANDBOX_REDIRECT_URI:', process.env.PLAID_SANDBOX_REDIRECT_URI);
     
+    // Create a unique client user ID
+    const clientUserId = 'user-id-' + Date.now();
+    
     // Base configuration for link token
     const tokenConfig = {
-      user: { client_user_id: 'user-id-' + Date.now() },
+      user: { 
+        client_user_id: clientUserId,
+      },
       client_name: "Portfolio App",
       language: 'en',
-      products: ['auth', 'transactions'],
+      products: ['auth', 'transactions', 'investments'],
       country_codes: ['US'],
     };
+    
+    // Add phone number if provided - use E.164 format (e.g., +1XXXXXXXXXX)
+    if (phoneNumber) {
+      console.log('Using provided phone number for pre-filling');
+      tokenConfig.user.phone_number = phoneNumber;
+    }
     
     // Only add redirect_uri if you're using OAuth flows (e.g., for European banks)
     // If you're not specifically needing OAuth, you can leave this out
