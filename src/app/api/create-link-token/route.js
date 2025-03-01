@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { plaidClient } from '../../lib/plaid';
+import { getPlaidRedirectUri } from '../../lib/utils';
 
 export async function POST(request) {
   try {
@@ -13,9 +14,12 @@ export async function POST(request) {
       console.log('No phone number provided in request body');
     }
     
+    // Get the appropriate redirect URI based on environment
+    const redirectUri = getPlaidRedirectUri(request);
+    
     console.log('PLAID_CLIENT_ID:', process.env.PLAID_CLIENT_ID);
     console.log('PLAID_ENV:', process.env.PLAID_ENV);
-    console.log('PLAID_SANDBOX_REDIRECT_URI:', process.env.PLAID_SANDBOX_REDIRECT_URI);
+    console.log('Using redirect URI:', redirectUri);
     
     // Create a unique client user ID
     const clientUserId = 'user-id-' + Date.now();
@@ -37,14 +41,10 @@ export async function POST(request) {
       tokenConfig.user.phone_number = phoneNumber;
     }
     
-    // Only add redirect_uri if you're using OAuth flows (e.g., for European banks)
-    // If you're not specifically needing OAuth, you can leave this out
-    // Uncomment this if you've configured the redirect URI in your Plaid dashboard:
-    /*
-    if (process.env.PLAID_SANDBOX_REDIRECT_URI) {
-      tokenConfig.redirect_uri = process.env.PLAID_SANDBOX_REDIRECT_URI;
-    }
-    */
+    // Add redirect URI for OAuth flows, using our dynamic utility
+    // This will use the appropriate URI based on whether we're
+    // running locally or on Vercel
+    tokenConfig.redirect_uri = redirectUri;
     
     console.log('Creating link token with config:', JSON.stringify(tokenConfig));
     const tokenResponse = await plaidClient.linkTokenCreate(tokenConfig);
