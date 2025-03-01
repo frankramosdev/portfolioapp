@@ -64,6 +64,12 @@ interface AgentRunResponse {
  */
 export async function createInvestmentAgentRun(chatId: string): Promise<AgentRunResponse | null> {
   try {
+    // Check if the Toolhouse API key is set
+    if (!process.env.TOOLHOUSE_API_KEY) {
+      console.error('Toolhouse API key is not configured. Please check your .env.local file.');
+      return null;
+    }
+    
     const url = 'https://api.toolhouse.ai/v1/agent-runs';
     const headers = {
       'Authorization': `Bearer ${process.env.TOOLHOUSE_API_KEY}`,

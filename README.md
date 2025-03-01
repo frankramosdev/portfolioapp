@@ -54,4 +54,4 @@ This application uses Plaid to securely connect to users' financial accounts, in
 - LoopMessage API
 - Tailwind CSS
 
-### [Austin AI Community Hackathon](https://lu.ma/atx-ai-hackathon) - Hosted by AITX & webAI
+### [Austin AI Community Hackathon](https://lu.ma/atx-ai-hackathon) -  Hosted by AITX & webAI

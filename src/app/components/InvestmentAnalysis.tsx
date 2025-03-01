@@ -42,6 +42,9 @@ export default function InvestmentAnalysis({
       const data = await response.json();
       
       if (!response.ok) {
+        if (data.error?.includes('API key not configured')) {
+          throw new Error('Toolhouse API key is missing. Please add it to your .env.local file.');
+        }
         throw new Error(data.error || 'Failed to analyze investments');
       }
       
