@@ -7,14 +7,26 @@ export async function POST() {
     console.log('PLAID_ENV:', process.env.PLAID_ENV);
     console.log('PLAID_SANDBOX_REDIRECT_URI:', process.env.PLAID_SANDBOX_REDIRECT_URI);
     
-    const tokenResponse = await plaidClient.linkTokenCreate({
+    // Base configuration for link token
+    const tokenConfig = {
       user: { client_user_id: 'user-id-' + Date.now() },
       client_name: "Portfolio App",
       language: 'en',
       products: ['auth', 'transactions'],
       country_codes: ['US'],
-      redirect_uri: process.env.PLAID_SANDBOX_REDIRECT_URI,
-    });
+    };
+    
+    // Only add redirect_uri if you're using OAuth flows (e.g., for European banks)
+    // If you're not specifically needing OAuth, you can leave this out
+    // Uncomment this if you've configured the redirect URI in your Plaid dashboard:
+    /*
+    if (process.env.PLAID_SANDBOX_REDIRECT_URI) {
+      tokenConfig.redirect_uri = process.env.PLAID_SANDBOX_REDIRECT_URI;
+    }
+    */
+    
+    console.log('Creating link token with config:', JSON.stringify(tokenConfig));
+    const tokenResponse = await plaidClient.linkTokenCreate(tokenConfig);
 
     console.log('Token created successfully');
     return NextResponse.json(tokenResponse.data);

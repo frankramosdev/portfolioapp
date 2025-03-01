@@ -8,6 +8,7 @@ export async function GET() {
     // Try to fetch institutions as a simple test
     const response = await plaidClient.institutionsGet({
       count: 1,
+      offset: 0,
       country_codes: ['US'],
       options: {
         include_optional_metadata: false
