@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import InvestmentAnalysis from '../components/InvestmentAnalysis';
 
 export default function Dashboard() {
   const [accounts, setAccounts] = useState(null);
@@ -198,6 +199,24 @@ export default function Dashboard() {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      )}
+      
+      {/* AI Investment Analysis */}
+      {investmentData && investmentData.has_investments && (
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-3 dark:text-white">AI Portfolio Analysis</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+            <InvestmentAnalysis 
+              holdings={investmentData.has_investments ? 
+                [
+                  ...(investmentData.plaid_401k?.holdings || []),
+                  ...(investmentData.plaid_ira?.holdings || [])
+                ] : []
+              }
+              chatId="6a9fafd6-48d0-42d5-bf70-770169c5f46f"
+            />
           </div>
         </div>
       )}
