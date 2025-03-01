@@ -1,17 +1,35 @@
 import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid';
 
-const plaidClient = new PlaidApi(
-  new Configuration({
-    basePath: PlaidEnvironments[process.env.PLAID_ENV],
-    baseOptions: {
-      headers: {
-        'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID,
-        'PLAID-SECRET': process.env.PLAID_SECRET,
-        'Plaid-Version': '2020-09-14',
-      },
+// Debug environment variables
+console.log('PLAID_ENV:', process.env.PLAID_ENV);
+console.log('PLAID_CLIENT_ID:', process.env.PLAID_CLIENT_ID);
+console.log('PLAID_SECRET length:', process.env.PLAID_SECRET ? process.env.PLAID_SECRET.length : 0);
+
+// Ensure we have a valid environment, default to sandbox
+const plaidEnv = process.env.PLAID_ENV || 'sandbox';
+console.log('Using Plaid environment:', plaidEnv);
+
+// Construct the Plaid client
+const clientConfig = {
+  basePath: PlaidEnvironments[plaidEnv],
+  baseOptions: {
+    headers: {
+      'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID,
+      'PLAID-SECRET': process.env.PLAID_SECRET,
+      'Plaid-Version': '2020-09-14',
     },
-  })
-);
+  },
+};
+
+console.log('Plaid client config:', {
+  basePath: clientConfig.basePath,
+  headers: {
+    'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID,
+    'PLAID-SECRET': process.env.PLAID_SECRET ? '(secret is set)' : '(secret is missing)',
+  }
+});
+
+const plaidClient = new PlaidApi(new Configuration(clientConfig));
 
 const sessionOptions = {
   cookieName: 'portfolioapp_session',
