@@ -17,6 +17,27 @@ interface MessageResponse {
 }
 
 /**
+ * Safely parse response as JSON with fallback
+ */
+async function safelyParseJson(response: Response): Promise<any> {
+  const contentType = response.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
+    try {
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to parse JSON response:', error);
+      return { message: await response.text() };
+    }
+  } else {
+    // Not JSON, return text with fallback message
+    const text = await response.text();
+    return { 
+      message: text || `Server returned ${response.status} ${response.statusText}`
+    };
+  }
+}
+
+/**
  * Send a message using LoopMessage API
  */
 export async function sendMessage({ to, message, mediaUrl }: SendMessageParams): Promise<MessageResponse> {
@@ -38,8 +59,8 @@ export async function sendMessage({ to, message, mediaUrl }: SendMessageParams):
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to send message');
+      const errorData = await safelyParseJson(response);
+      throw new Error(errorData.message || `Failed to send message (${response.status})`);
     }
 
     return await response.json();
@@ -63,8 +84,8 @@ export async function getMessageStatus(messageId: string): Promise<MessageRespon
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to get message status');
+      const errorData = await safelyParseJson(response);
+      throw new Error(errorData.message || `Failed to get message status (${response.status})`);
     }
 
     return await response.json();
@@ -89,7 +110,8 @@ export async function testLoopMessageConnection(): Promise<{ success: boolean; m
     });
 
     if (!response.ok) {
-      throw new Error('Failed to connect to LoopMessage API');
+      const errorData = await safelyParseJson(response);
+      throw new Error(errorData.message || `Failed to connect to LoopMessage API (${response.status})`);
     }
 
     return {
