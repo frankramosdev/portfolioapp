@@ -2,7 +2,7 @@
  * LoopMessage API utility functions
  */
 
-const BASE_URL = 'https://api.loopmessage.com';
+const BASE_URL = 'https://server.loopmessage.com/api';
 
 interface SendMessageParams {
   to: string | string[];
@@ -44,16 +44,16 @@ export async function sendMessage({ to, message, mediaUrl }: SendMessageParams):
   try {
     const recipients = Array.isArray(to) ? to : [to];
     
-    const response = await fetch(`${BASE_URL}/v1/messages`, {
+    const response = await fetch(`${BASE_URL}/v1/message/send/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.LOOPMESSAGE_AUTH_KEY}`,
-        'X-API-Secret': process.env.LOOPMESSAGE_SECRET_KEY || '',
+        'Authorization': process.env.LOOPMESSAGE_AUTH_KEY || '',
+        'Loop-Secret-Key': process.env.LOOPMESSAGE_SECRET_KEY || '',
       },
       body: JSON.stringify({
-        recipients,
-        content: message,
+        recipient: recipients[0], // LoopMessage API expects 'recipient' field
+        text: message,
         ...(mediaUrl && { media_url: mediaUrl }),
       }),
     });
@@ -75,12 +75,16 @@ export async function sendMessage({ to, message, mediaUrl }: SendMessageParams):
  */
 export async function getMessageStatus(messageId: string): Promise<MessageResponse> {
   try {
-    const response = await fetch(`${BASE_URL}/v1/messages/${messageId}`, {
-      method: 'GET',
+    const response = await fetch(`${BASE_URL}/v1/message/status/`, {
+      method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.LOOPMESSAGE_AUTH_KEY}`,
-        'X-API-Secret': process.env.LOOPMESSAGE_SECRET_KEY || '',
+        'Content-Type': 'application/json',
+        'Authorization': process.env.LOOPMESSAGE_AUTH_KEY || '',
+        'Loop-Secret-Key': process.env.LOOPMESSAGE_SECRET_KEY || '',
       },
+      body: JSON.stringify({
+        message_id: messageId,
+      }),
     });
 
     if (!response.ok) {
@@ -100,16 +104,33 @@ export async function getMessageStatus(messageId: string): Promise<MessageRespon
  */
 export async function testLoopMessageConnection(): Promise<{ success: boolean; message: string }> {
   try {
-    // Simple ping request to test connection
-    const response = await fetch(`${BASE_URL}/v1/status`, {
-      method: 'GET',
+    // Check if API keys are set
+    const apiKey = process.env.LOOPMESSAGE_AUTH_KEY;
+    const secretKey = process.env.LOOPMESSAGE_SECRET_KEY;
+    
+    if (!apiKey || !secretKey) {
+      return {
+        success: false,
+        message: 'LoopMessage API keys are not configured',
+      };
+    }
+    
+    // Simple request to test connection - will use status endpoint
+    const response = await fetch(`${BASE_URL}/v1/message/status/`, {
+      method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.LOOPMESSAGE_AUTH_KEY}`,
-        'X-API-Secret': process.env.LOOPMESSAGE_SECRET_KEY || '',
+        'Content-Type': 'application/json',
+        'Authorization': apiKey,
+        'Loop-Secret-Key': secretKey,
       },
+      body: JSON.stringify({
+        message_id: 'test-connection',
+      }),
     });
 
-    if (!response.ok) {
+    // Even if we get an error about invalid message ID, the connection works
+    // We just want to check if the API is reachable and credentials are valid
+    if (response.status !== 404 && !response.ok) {
       const errorData = await safelyParseJson(response);
       throw new Error(errorData.message || `Failed to connect to LoopMessage API (${response.status})`);
     }

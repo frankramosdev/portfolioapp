@@ -42,7 +42,7 @@ export async function GET() {
       apiKey: apiKeyStatus,
       secretKey: secretKeyStatus,
       configStatus: result.success ? 'valid' : 'invalid',
-      baseUrl: 'https://api.loopmessage.com',
+      baseUrl: 'https://server.loopmessage.com/api',
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
@@ -59,7 +59,7 @@ export async function GET() {
         configStatus: 'error',
         recommendations: [
           'Check that your API keys are correct',
-          'Ensure your network allows connections to api.loopmessage.com',
+          'Ensure your network allows connections to server.loopmessage.com',
           'Check if the LoopMessage service is operational'
         ]
       },

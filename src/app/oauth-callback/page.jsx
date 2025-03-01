@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function OAuthCallback() {
+// This component uses the useSearchParams hook
+function OAuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState('Processing your bank connection...');
@@ -55,18 +56,41 @@ export default function OAuthCallback() {
   }, [searchParams, router]);
   
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-neutral-900">
-      <div className="max-w-md w-full p-6 text-center">
-        <div className="mb-8">
-          <div className="mx-auto w-16 h-16 border-4 border-t-blue-500 border-b-blue-700 border-l-blue-500 border-r-blue-700 rounded-full animate-spin"></div>
-        </div>
-        <h1 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">
-          {status}
-        </h1>
-        <p className="text-gray-500 dark:text-gray-400">
-          Please don't close this window.
-        </p>
+    <div className="max-w-md w-full p-6 text-center">
+      <div className="mb-8">
+        <div className="mx-auto w-16 h-16 border-4 border-t-blue-500 border-b-blue-700 border-l-blue-500 border-r-blue-700 rounded-full animate-spin"></div>
       </div>
+      <h1 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">
+        {status}
+      </h1>
+      <p className="text-gray-500 dark:text-gray-400">
+        Please don't close this window.
+      </p>
+    </div>
+  );
+}
+
+// Loading fallback for suspense
+function LoadingFallback() {
+  return (
+    <div className="max-w-md w-full p-6 text-center">
+      <div className="mb-8">
+        <div className="mx-auto w-16 h-16 border-4 border-t-blue-500 border-b-blue-700 border-l-blue-500 border-r-blue-700 rounded-full animate-spin"></div>
+      </div>
+      <h1 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">
+        Loading...
+      </h1>
+    </div>
+  );
+}
+
+// Main component that wraps the content in Suspense
+export default function OAuthCallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-neutral-900">
+      <Suspense fallback={<LoadingFallback />}>
+        <OAuthCallbackContent />
+      </Suspense>
     </div>
   );
 } 
