@@ -1,4 +1,5 @@
 import Image from "next/image";
+import PlaidLinkButton from "./components/PlaidLink";
 
 export default function Home() {
   return (
@@ -12,6 +13,13 @@ export default function Home() {
           height={38}
           priority
         />
+        
+        <div className="text-center sm:text-left">
+          <h1 className="text-2xl font-bold mb-4">Portfolio App</h1>
+          <p className="mb-6">Connect your bank account to get started</p>
+          <PlaidLinkButton />
+        </div>
+        
         <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           <li className="mb-2">
             Get started by editing{" "}
