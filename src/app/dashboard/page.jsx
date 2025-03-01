@@ -61,28 +61,28 @@ export default function Dashboard() {
   };
 
   if (loading) {
-    return <div className="p-4">Loading account information...</div>;
+    return <div className="p-4 dark:text-white">Loading account information...</div>;
   }
 
   if (error) {
-    return <div className="p-4 text-red-500">{error}</div>;
+    return <div className="p-4 text-red-500 dark:text-red-400">{error}</div>;
   }
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Your Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-4 dark:text-white">Your Dashboard</h1>
       
       {/* Bank Accounts Section */}
       <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-3">Bank Accounts</h2>
+        <h2 className="text-xl font-semibold mb-3 dark:text-white">Bank Accounts</h2>
         {accounts && accounts.accounts && (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {accounts.accounts.map((account) => (
-              <div key={account.account_id} className="border rounded-lg p-4 shadow-sm bg-white">
-                <h3 className="text-lg font-semibold">{account.name}</h3>
-                <p className="text-gray-600">{account.official_name}</p>
-                <p className="text-gray-600">Type: {account.type} / {account.subtype}</p>
-                <p className="mt-2">
+              <div key={account.account_id} className="border rounded-lg p-4 shadow-sm bg-white dark:bg-gray-800 dark:border-gray-700">
+                <h3 className="text-lg font-semibold dark:text-white">{account.name}</h3>
+                <p className="text-gray-600 dark:text-gray-300">{account.official_name}</p>
+                <p className="text-gray-600 dark:text-gray-300">Type: {account.type} / {account.subtype}</p>
+                <p className="mt-2 dark:text-white">
                   <span className="font-medium">Balance: </span>
                   <span className="font-bold">
                     ${account.balances.available || account.balances.current || 0}
@@ -94,51 +94,103 @@ export default function Dashboard() {
         )}
         
         {(!accounts || !accounts.accounts || accounts.accounts.length === 0) && (
-          <p>No bank accounts found. Please connect your bank account.</p>
+          <p className="dark:text-white">No bank accounts found. Please connect your bank account.</p>
         )}
       </div>
       
       {/* 401k Investment Section */}
       {investmentData && investmentData.has_investments && investmentData.plaid_401k && (
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-3">401k Investments</h2>
-          <div className="bg-white rounded-lg shadow-sm border p-4 mb-4">
+          <h2 className="text-xl font-semibold mb-3 dark:text-white">401k Investments</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 mb-4">
             <div className="flex justify-between items-center mb-3">
-              <h3 className="text-lg font-semibold">{investmentData.plaid_401k.account_name}</h3>
-              <div className="text-lg font-bold text-green-600">
+              <h3 className="text-lg font-semibold dark:text-white">{investmentData.plaid_401k.account_name}</h3>
+              <div className="text-lg font-bold text-green-600 dark:text-green-400">
                 {formatCurrency(investmentData.plaid_401k.account_value)}
               </div>
             </div>
-            <p className="text-gray-600 mb-4">Account Type: {investmentData.plaid_401k.account_type}</p>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">Account Type: {investmentData.plaid_401k.account_type}</p>
             
             {/* Holdings Table */}
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
-                    <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Security</th>
-                    <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Ticker</th>
-                    <th scope="col" className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">Quantity</th>
-                    <th scope="col" className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">Price</th>
-                    <th scope="col" className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">Value</th>
+                    <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Security</th>
+                    <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Ticker</th>
+                    <th scope="col" className="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Quantity</th>
+                    <th scope="col" className="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Price</th>
+                    <th scope="col" className="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Value</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {investmentData.plaid_401k.holdings.map((holding, index) => (
-                    <tr key={`${holding.security_id}-${index}`} className="hover:bg-gray-50">
-                      <td className="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <tr key={`${holding.security_id}-${index}`} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <td className="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                         {holding.security_name}
                       </td>
-                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         {holding.ticker_symbol || 'N/A'}
                       </td>
-                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500 text-right">
+                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-right">
                         {holding.quantity}
                       </td>
-                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500 text-right">
+                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-right">
                         {formatCurrency(holding.institution_price)}
                       </td>
-                      <td className="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
+                      <td className="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-right">
+                        {formatCurrency(holding.institution_value)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* IRA Investment Section */}
+      {investmentData && investmentData.has_investments && investmentData.plaid_ira && (
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-3 dark:text-white">IRA Investments</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 mb-4">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-lg font-semibold dark:text-white">{investmentData.plaid_ira.account_name}</h3>
+              <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                {formatCurrency(investmentData.plaid_ira.account_value)}
+              </div>
+            </div>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">Account Type: {investmentData.plaid_ira.account_type}</p>
+            
+            {/* Holdings Table */}
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700">
+                  <tr>
+                    <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Security</th>
+                    <th scope="col" className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Ticker</th>
+                    <th scope="col" className="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Quantity</th>
+                    <th scope="col" className="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Price</th>
+                    <th scope="col" className="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Value</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  {investmentData.plaid_ira.holdings.map((holding, index) => (
+                    <tr key={`${holding.security_id}-${index}`} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <td className="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                        {holding.security_name}
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                        {holding.ticker_symbol || 'N/A'}
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-right">
+                        {holding.quantity}
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-right">
+                        {formatCurrency(holding.institution_price)}
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white text-right">
                         {formatCurrency(holding.institution_value)}
                       </td>
                     </tr>
@@ -152,7 +204,7 @@ export default function Dashboard() {
       
       <button 
         onClick={() => router.push('/')}
-        className="mt-6 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        className="mt-6 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
       >
         Connect Another Account
       </button>

@@ -80,13 +80,19 @@ export async function GET() {
     
     // Get the 401k account specifically
     const plaid401k = holdingsByAccount.find(
-      account => account.account_name.includes('401k') || account.account_subtype === '401k'
+      account => account.account_name.includes('401k') || account.account_type === '401k'
+    );
+
+    // Get IRA accounts specifically
+    const plaidIRA = holdingsByAccount.find(
+      account => account.account_name.includes('IRA') || account.account_type === 'ira'
     );
 
     return NextResponse.json({
       has_investments: true,
       all_accounts: holdingsByAccount,
       plaid_401k: plaid401k || null,
+      plaid_ira: plaidIRA || null,
       securities
     });
 
